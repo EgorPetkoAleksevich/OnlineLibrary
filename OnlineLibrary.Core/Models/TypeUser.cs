@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OnlineLibrary.Core.Models.Interfaces
+namespace OnlineLibrary.Core.Models
 {
-    internal interface IDate
+    public enum TypeUser
     {
-        public string GetDate();
+        reader,
+        writer,
+        admin
     }
 }

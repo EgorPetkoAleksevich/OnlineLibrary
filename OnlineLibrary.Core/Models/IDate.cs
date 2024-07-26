@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OnlineLibrary.Core.Models.Interfaces
+namespace OnlineLibrary.Core.Models
 {
-    internal interface IAuthorInfo
+    public interface IDate
     {
-        int Id { get; }
-        string Name { get; }
+        string GetDate();
     }
 }
