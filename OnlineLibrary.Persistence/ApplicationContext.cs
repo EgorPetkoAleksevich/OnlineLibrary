@@ -13,9 +13,9 @@ namespace OnlineLibrary.Persistence
     public class ApplicationContext : DbContext
     {
 
-        //public DbSet<User> Users => Set<User>();
-        public DbSet<Author> Authors => Set<Author>();
-        //public DbSet<Book> Books => Set<Book>();
+        public DbSet<UserEntity> Users => Set<UserEntity>();
+        public DbSet<AuthorEntity> Authors => Set<AuthorEntity>();
+        public DbSet<BookEntity> Books => Set<BookEntity>();
         
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
         {

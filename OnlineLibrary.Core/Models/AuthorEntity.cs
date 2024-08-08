@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OnlineLibrary.Core.Models
 {
-    public class Author
+    public class AuthorEntity
     {
         public int Id { get; set;  }
         public string Name { get; set; }

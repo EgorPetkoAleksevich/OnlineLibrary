@@ -3,19 +3,26 @@ using Microsoft.EntityFrameworkCore;
 using OnlineLibrary.Core;
 using OnlineLibrary.Core.Models;
 using OnlineLibrary.Persistence;
+using System.Security.Claims;
 
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationContext>();
+builder.Services.AddControllers();
+builder.Services.AddSwaggerGen();
+
 
 var app = builder.Build();
 
-app.Map("/", async () =>
+if (app.Environment.IsDevelopment())
 {
-    using var scope = app.Services.CreateScope();
-    var context = scope.ServiceProvider.GetRequiredService<ApplicationContext>();
+    app.UseSwagger();
+    app.UseSwaggerUI();
+    
+}
 
-});
+app.UseHttpsRedirection();
 
-
+app.MapControllers();
 app.Run();
+

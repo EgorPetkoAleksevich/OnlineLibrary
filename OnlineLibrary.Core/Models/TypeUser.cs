@@ -10,6 +10,7 @@ namespace OnlineLibrary.Core.Models
     {
         reader,
         writer,
-        admin
+        admin,
+        unknown
     }
 }
