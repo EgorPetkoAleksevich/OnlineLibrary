@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace OnlineLibrary.Core.Models
 {
-    public enum TypeUser
+    public enum TypeStatusToProductionBook
     {
-        unknown,
-        user,
+        source,
         moderator,
-        admin,
-        superAdmin 
+        author,
+        reader,
+        none
     }
 }

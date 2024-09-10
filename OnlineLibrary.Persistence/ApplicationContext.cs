@@ -22,17 +22,28 @@ namespace OnlineLibrary.Persistence
         public UserRepository userRepository;
         public BookRepository bookRepository;
         public AuthorRepository authorRepository;
+
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
         {
             userRepository = new UserRepository(this);
             bookRepository = new BookRepository(this);
             authorRepository = new AuthorRepository(this);
-        }
 
+            //Database.EnsureDeleted();
+            //Database.EnsureCreated();
+        }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<BookEntity>()
+                    .HasMany(c => c.Authors)
+                    .WithMany(s => s.Books)
+                    .UsingEntity(j => j.ToTable("AuthorToBook"));
+        }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=test1;Trusted_Connection=True;");
         }
+       
 
         public class UserRepository : IRepository<UserEntity>
         {

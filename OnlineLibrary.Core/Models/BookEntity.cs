@@ -14,6 +14,20 @@ namespace OnlineLibrary.Core.Models
         public string? Description { get; set; }
         public string? DatePublication { get; set; }
         public string? DateAdded { get; set; }
-        public AuthorEntity? Author { get; set; }
+        public List<AuthorEntity> Authors { get; set; } = new();
+        public List<UserToBook> UsersTo { get; set; } = new();
+
+        public BookEntity(string? title, string? description, string? datePublication, string? dateAdded)
+        {
+            Title = title;
+            Description = description;
+            DatePublication = datePublication;
+            DateAdded = dateAdded;
+        }
+        public BookEntity() 
+        { 
+
+        }
+
     }
 }

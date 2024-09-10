@@ -12,9 +12,41 @@ namespace OnlineLibrary.Application
     public class UserManager
     {
         private IRepository<UserEntity> _userRepository;
+        private Dictionary<(TypeUser, TypeUser), List<TypeAction>> rulesWithOthers;
         public UserManager(IRepository<UserEntity> repository) 
         { 
             _userRepository = repository;
+            rulesWithOthers = new Dictionary<(TypeUser, TypeUser), List<TypeAction>>();
+
+            rulesWithOthers[(TypeUser.superAdmin,TypeUser.superAdmin)] = new List<TypeAction>() { TypeAction.create, TypeAction.ban,TypeAction.delete,TypeAction.get};
+            rulesWithOthers[(TypeUser.superAdmin, TypeUser.admin)] = new List<TypeAction>() { TypeAction.create, TypeAction.ban, TypeAction.delete, TypeAction.get };
+            rulesWithOthers[(TypeUser.superAdmin, TypeUser.moderator)] = new List<TypeAction>() { TypeAction.create, TypeAction.ban, TypeAction.delete, TypeAction.get };
+            rulesWithOthers[(TypeUser.superAdmin, TypeUser.user)] = new List<TypeAction>() { TypeAction.create, TypeAction.ban, TypeAction.delete, TypeAction.get };
+            rulesWithOthers[(TypeUser.superAdmin, TypeUser.unknown)] = new List<TypeAction>() { TypeAction.create, TypeAction.ban, TypeAction.delete, TypeAction.get };
+
+            rulesWithOthers[(TypeUser.admin, TypeUser.superAdmin)] = new List<TypeAction>() { };
+            rulesWithOthers[(TypeUser.admin, TypeUser.admin)] = new List<TypeAction>() { TypeAction.get };
+            rulesWithOthers[(TypeUser.admin, TypeUser.moderator)] = new List<TypeAction>() { TypeAction.create, TypeAction.ban, TypeAction.delete, TypeAction.get };
+            rulesWithOthers[(TypeUser.admin, TypeUser.user)] = new List<TypeAction>() { TypeAction.create, TypeAction.ban, TypeAction.delete, TypeAction.get };
+            rulesWithOthers[(TypeUser.admin, TypeUser.unknown)] = new List<TypeAction>() { TypeAction.create, TypeAction.ban, TypeAction.delete, TypeAction.get };
+
+            rulesWithOthers[(TypeUser.moderator, TypeUser.superAdmin)] = new List<TypeAction>() { };
+            rulesWithOthers[(TypeUser.moderator, TypeUser.admin)] = new List<TypeAction>() { TypeAction.get };
+            rulesWithOthers[(TypeUser.moderator, TypeUser.moderator)] = new List<TypeAction>() { TypeAction.get };
+            rulesWithOthers[(TypeUser.moderator, TypeUser.user)] = new List<TypeAction>() { TypeAction.create, TypeAction.ban, TypeAction.delete, TypeAction.get };
+            rulesWithOthers[(TypeUser.moderator, TypeUser.unknown)] = new List<TypeAction>() { TypeAction.create, TypeAction.ban, TypeAction.delete, TypeAction.get };
+
+            rulesWithOthers[(TypeUser.user, TypeUser.superAdmin)] = new List<TypeAction>() { };
+            rulesWithOthers[(TypeUser.user, TypeUser.admin)] = new List<TypeAction>() { };
+            rulesWithOthers[(TypeUser.user, TypeUser.moderator)] = new List<TypeAction>() { };
+            rulesWithOthers[(TypeUser.user, TypeUser.user)] = new List<TypeAction>() { };
+            rulesWithOthers[(TypeUser.user, TypeUser.unknown)] = new List<TypeAction>() { };
+
+            rulesWithOthers[(TypeUser.unknown, TypeUser.superAdmin)] = new List<TypeAction>() { };
+            rulesWithOthers[(TypeUser.unknown, TypeUser.admin)] = new List<TypeAction>() { };
+            rulesWithOthers[(TypeUser.unknown, TypeUser.moderator)] = new List<TypeAction>() { };
+            rulesWithOthers[(TypeUser.unknown, TypeUser.user)] = new List<TypeAction>() { };
+            rulesWithOthers[(TypeUser.unknown, TypeUser.unknown)] = new List<TypeAction>() { };
         }
 
         public (bool,int,string) Validation(UserEntity entity)
@@ -42,6 +74,44 @@ namespace OnlineLibrary.Application
             return (true, 200, "ok");
         }
 
+        public UserEntity? GetByName(string? name)
+        {
+            foreach(var entity in _userRepository.GetAll()) 
+            { 
+                if (entity.Name == name) return entity; 
+            }
+            return null;
+        }
+
+        public UserEntity? GetById (int id)
+        {
+            foreach (var entity in _userRepository.GetAll())
+            {
+                if (entity.Id == id) return entity;
+            }
+            return null;
+        }
+
+        public bool haveRule(TypeUser? executor, TypeUser? user, TypeAction action)
+        {
+            if (executor == null || user == null) return false;
+            var key = ((TypeUser)executor, (TypeUser)user);
+            
+            if (rulesWithOthers.ContainsKey(key))
+            {
+                foreach (var rule in rulesWithOthers[key])
+                {
+                    if(rule == action) return true;
+                }
+            }
+            return false;
+        }
+
+        public void Delete(UserEntity user)
+        {
+            _userRepository.Delete(user);
+            _userRepository.Save();
+        }
 
     }
 }

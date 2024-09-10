@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 
 namespace OnlineLibrary.Core.Models
 {
-    public enum TypeUser
+    public enum TypeStatusForAccessingBook
     {
-        unknown,
-        user,
-        moderator,
-        admin,
-        superAdmin 
+        reading,
+        moderation,
+        none
     }
 }

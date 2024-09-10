@@ -16,13 +16,11 @@ namespace OnlineLibrary.Application
             switch(value)
             {
                 case "reader":
-                    return TypeUser.reader;
+                    return TypeUser.user;
                     
                 case "admin":
                     return TypeUser.admin;
 
-                case "writer":
-                    return TypeUser.writer;
             }
             return TypeUser.unknown;
         }
