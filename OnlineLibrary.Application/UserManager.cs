@@ -11,11 +11,11 @@ namespace OnlineLibrary.Application
 {
     public class UserManager
     {
-        private IRepository<UserEntity> _userRepository;
+        private IRepository<UserEntity> _repository;
         private Dictionary<(TypeUser, TypeUser), List<TypeAction>> rulesWithOthers;
         public UserManager(IRepository<UserEntity> repository) 
         { 
-            _userRepository = repository;
+            _repository = repository;
             rulesWithOthers = new Dictionary<(TypeUser, TypeUser), List<TypeAction>>();
 
             rulesWithOthers[(TypeUser.superAdmin,TypeUser.superAdmin)] = new List<TypeAction>() { TypeAction.create, TypeAction.ban,TypeAction.delete,TypeAction.get};
@@ -66,7 +66,7 @@ namespace OnlineLibrary.Application
 
                 return (false, 400,"short password");
             }
-            if (_userRepository.GetAll().Where(u => u.Name == entity.Name).Count() > 0)
+            if (_repository.GetAll().Where(u => u.Name == entity.Name).Count() > 0)
             {
                 return (false, 400, "name taken");
             }
@@ -76,7 +76,7 @@ namespace OnlineLibrary.Application
 
         public UserEntity? GetByName(string? name)
         {
-            foreach(var entity in _userRepository.GetAll()) 
+            foreach(var entity in _repository.GetAll()) 
             { 
                 if (entity.Name == name) return entity; 
             }
@@ -85,32 +85,32 @@ namespace OnlineLibrary.Application
 
         public UserEntity? GetById (int id)
         {
-            foreach (var entity in _userRepository.GetAll())
+            foreach (var entity in _repository.GetAll())
             {
                 if (entity.Id == id) return entity;
             }
             return null;
         }
 
-        public bool haveRule(TypeUser? executor, TypeUser? user, TypeAction action)
+        public bool haveRule(TypeUser? typeExecutor, TypeUser? typeUser, TypeAction typeAction)
         {
-            if (executor == null || user == null) return false;
-            var key = ((TypeUser)executor, (TypeUser)user);
+            if (typeExecutor == null || typeUser == null) return false;
+            var key = ((TypeUser)typeExecutor, (TypeUser)typeUser);
             
             if (rulesWithOthers.ContainsKey(key))
             {
                 foreach (var rule in rulesWithOthers[key])
                 {
-                    if(rule == action) return true;
+                    if(rule == typeAction) return true;
                 }
             }
             return false;
         }
 
-        public void Delete(UserEntity user)
+        public void Delete(UserEntity entity)
         {
-            _userRepository.Delete(user);
-            _userRepository.Save();
+            _repository.Delete(entity);
+            _repository.Save();
         }
 
     }
